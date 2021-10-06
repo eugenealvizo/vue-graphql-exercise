@@ -1,5 +1,5 @@
 <template>
-    <v-card>
+    <v-card v-if="items.length > 0">
       <v-list class="pa-5">
         <v-list-item-group>
           <v-list-item
@@ -21,7 +21,7 @@
                 </v-icon>
               </v-btn>
                 <v-btn icon>
-                <v-icon color="grey lighten-1">
+                <v-icon color="grey lighten-1" @click="deleteUser(item.id)">
                   mdi-delete
                 </v-icon>
               </v-btn>
@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import { apollo } from "../apollo";
 import { ALLPOST } from "../graphql/allposts"
 
@@ -40,19 +41,33 @@ export default {
   name: 'App',
   data() {
       return {
-        items:[]
+        // items:[]
     }
   },
   components: {
     // HelloWorld
   },
+  computed: {
+      ...mapGetters({
+          items: 'getPosts',
+      })
+  },
   methods: {
+    deleteUser(id){
+        this.$store.dispatch('deletePost', id) 
+        this.$store.dispatch('setSnackbar', 'Deleted User')
+         
+    },
     getAllPost(){
+       this.$store.dispatch('setLoading', true) 
        apollo.query({
           query: ALLPOST
         })
         .then(response => {
-          this.items = response.data.posts.data 
+          // this.items = response.data.posts.data 
+          this.$store.dispatch('setPosts', response.data.posts.data)
+          this.$store.dispatch('setLoading', false)  
+         
           console.log(response.data)
         })
         .catch(err => {
@@ -60,7 +75,7 @@ export default {
       })
     }
   },
-  created() {
+  mounted() {
     this.getAllPost();
   }
 }

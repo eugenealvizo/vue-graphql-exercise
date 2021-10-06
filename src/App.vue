@@ -5,6 +5,7 @@
       <router-view></router-view>
     </div>
    <v-btn
+      @click="addPost()"
       class="floating-btn"
       color="primary"
       fab>
@@ -29,6 +30,12 @@ export default {
     Header
   },
   created() {
+  },
+  methods: {
+    addPost(){
+        this.$store.dispatch('addPost', {id: 'unique', title: 'title', body: 'body'})
+        this.$store.dispatch('addUser', {id: 'unique', name: 'title', email: 'body'})
+    }
   }
 }
 </script>

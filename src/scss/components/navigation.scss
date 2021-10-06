@@ -5,6 +5,11 @@
     color: white;
 }
 
+.top-header + .v-progress-linear {
+    top: 68px;
+    position: absolute;
+}
+
 .main-footer {
     position: fixed;
     bottom: 0;

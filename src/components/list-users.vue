@@ -2,7 +2,7 @@
     <v-card>
       <!--- <modal>
       </modal> --->
-      <v-list class="pa-5">
+      <v-list class="pa-5"  v-if="items.length > 0">
         <v-list-item-group>
           <v-list-item
             v-for="(item, i) in items"
@@ -22,7 +22,7 @@
                   mdi-pencil
                 </v-icon>
               </v-btn>
-                <v-btn icon>
+                <v-btn icon @click="deleteUser(item.id)">
                 <v-icon color="grey lighten-1">
                   mdi-delete
                 </v-icon>
@@ -36,6 +36,7 @@
 
 <script>
 // import modal from './partials/modal.vue';
+import { mapGetters } from 'vuex';
 import { apollo } from "../apollo";
 import { ALLUSERS } from "../graphql/allusers";
 
@@ -43,20 +44,32 @@ export default {
   name: 'App',
   data() {
       return {
-        items:[{
-        }]
+        // items:[{
+        // }]
     }
+  },
+  computed: {
+        ...mapGetters({
+            items: 'getUsers',
+        })
   },
   components: {
     // modal
   },
   methods: {
+    deleteUser(id){
+        this.$store.dispatch('deleteUser', id) 
+        this.$store.dispatch('setSnackbar', 'Deleted User')
+    },
     getAllUsers(){
+        this.$store.dispatch('setLoading', true) 
         apollo.query({
             query: ALLUSERS
           })
           .then(response => {
-            this.items = response.data.users.data 
+            // this.items = response.data.users.data 
+            this.$store.dispatch('setUsers', response.data.users.data)
+            this.$store.dispatch('setLoading', false) 
           })
           .catch(err => {
             console.log(err)
