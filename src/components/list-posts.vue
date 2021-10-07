@@ -1,8 +1,9 @@
 <template>
   <div>
        <!-- MODAL -->
-      <modal>
-        <modal-post></modal-post>
+      <modal :title="`${modal.form }`">
+        <modal-post v-if="modal.form != null && modal.form == 'create_posts' "></modal-post>
+        <modal-delete @close="close" @delete="deletePost(), close()" v-if="modal.form != null && modal.form == 'delete_post'"></modal-delete> 
       </modal>
     <v-card v-if="items.length > 0">
       <v-list class="pa-5">
@@ -26,7 +27,7 @@
                 </v-icon>
               </v-btn>
                 <v-btn icon>
-                <v-icon color="grey lighten-1" @click="deletePost(item)">
+                <v-icon color="grey lighten-1" @click="openModalDelete(item)">
                   mdi-delete
                 </v-icon>
               </v-btn>
@@ -41,6 +42,8 @@
 <script>
 import modal from './partials/modal.vue';
 import modalPost from './partials/modal-post.vue';
+import modalDelete from './partials/modal-delete.vue'
+
 import { mapGetters } from 'vuex';
 import { apollo } from "../apollo";
 import { ALLPOST, DELETEPOST } from "../graphql/posts"
@@ -48,23 +51,32 @@ import { ALLPOST, DELETEPOST } from "../graphql/posts"
 export default {
   name: 'App',
   data() {
-      return {
-    
-        // items:[]
+    return {
+        selectedDelPost: null
     }
   },
   components: {
     modal,
-    modalPost
+    modalPost,
+    modalDelete
   },
   computed: {
       ...mapGetters({
           items: 'getPosts',
+          modal: 'getModal'
       })
   },
   methods: {
+     openModalDelete(userData){
+        this.selectedDelUser = userData;
+        this.$store.dispatch('setModal', { form: 'delete_post'});
+    },
+    close(){
+        this.$store.dispatch('setModal', { form: null}); 
+    },
 
-    deletePost(postData){
+    deletePost(){
+         let postData = this.selectedDelUser;
         this.$store.dispatch('setLoading', true); 
         apollo.mutate({
           mutation: DELETEPOST,
@@ -75,7 +87,7 @@ export default {
         .then(response => {
            console.log(response)
             this.$store.dispatch('setLoading', false) 
-            this.$store.dispatch('setSnackbar', `Deleted ${postData.title} user`)
+            this.$store.dispatch('setSnackbar', `Deleted ${postData.title} post`)
             this.$store.dispatch('deletePost', postData.id) 
         })
         .catch(err => {
@@ -106,6 +118,6 @@ export default {
     this.getAllPost();
   },
   created(){
-  }
+  },
 }
 </script>

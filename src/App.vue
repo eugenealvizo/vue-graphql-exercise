@@ -6,7 +6,7 @@
       <router-view></router-view>
     </div>
    <v-btn
-      @click="addPost()"
+      @click="addData()"
       class="floating-btn"
       color="primary"
       fab>
@@ -33,10 +33,8 @@ export default {
   created() {
   },
   methods: {
-    addPost(){
-           this.$store.dispatch('setModal', { form: `create_${this.$route.name}`});
-        // this.$store.dispatch('addPost', {id: 'unique', title: 'title', body: 'body'})
-        // this.$store.dispatch('addUser', {id: 'unique', name: 'title', email: 'body'})
+    addData(){
+        this.$store.dispatch('setModal', { form: `create_${this.$route.name}`});
     }
   }
 }

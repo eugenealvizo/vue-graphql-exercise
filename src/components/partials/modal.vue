@@ -7,8 +7,8 @@
       max-width="650"
     >
       <v-card class="pa-5">
-        <v-card-title class="text-h5">
-          Create Post
+        <v-card-title class="text-h5" style="  text-transform: capitalize;">
+            {{ title | capitalize }}
         </v-card-title>
         <v-card-text>
         </v-card-text>
@@ -19,6 +19,7 @@
 </template>
 <script>
   export default {
+    props: ['title'],
     data () {
       return {
           modal: false
@@ -33,6 +34,11 @@
                     this.modal = false;
             }
         })
+    },
+    filters: {
+      capitalize(string){
+        return string.replace("_", " ");
+      }
     }
   }
 </script>

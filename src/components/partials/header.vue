@@ -1,7 +1,7 @@
 <template>
     <div>
         <nav class="top-header">
-            <h1>{{setTitleHeader}}</h1>
+            <h1>{{setTitleHeader  }}</h1>
         </nav>
           <v-progress-linear
                 :active="isLoading"
@@ -24,7 +24,7 @@
 import { mapGetters } from 'vuex';
 
  export default {
-      data() {
+    data() {
       return {
           isVisible: false,
           msg: "" 

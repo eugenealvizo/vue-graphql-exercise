@@ -1,8 +1,14 @@
 .top-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     max-height: 80px;
     background-color: #2196F3;
     padding: 16px;
+    z-index: 1;
     color: white;
+    text-transform: capitalize;
 }
 
 .top-header + .v-progress-linear {

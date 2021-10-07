@@ -1,8 +1,9 @@
 <template>
     <v-card>
       <!-- MODAL -->
-      <modal>
-        <modal-user></modal-user> 
+      <modal :title="`${modal.form }`">
+        <modal-user v-if="modal.form != null && modal.form == 'create_users' "></modal-user> 
+        <modal-delete @close="close" @delete="deleteUser(), close()" v-if="modal.form != null && modal.form == 'delete_user' "></modal-delete> 
       </modal>
 
 
@@ -27,7 +28,7 @@
                   mdi-pencil
                 </v-icon>
               </v-btn>
-                <v-btn icon @click="deleteUser(item)">
+                <v-btn icon @click="openModalDelete(item)">
                 <v-icon color="grey lighten-1">
                   mdi-delete
                 </v-icon>
@@ -41,6 +42,7 @@
 
 <script>
 import modal from './partials/modal.vue';
+import modalDelete from './partials/modal-delete.vue';
 import modalUser from './partials/modal-user.vue';
 import { mapGetters } from 'vuex';
 import { apollo } from "../apollo";
@@ -50,21 +52,30 @@ export default {
   name: 'App',
   data() {
       return {
-        // items:[{
-        // }]
+        selectedDelUser: null
     }
   },
   computed: {
         ...mapGetters({
             items: 'getUsers',
+            modal: 'getModal'
         })
   },
   components: {
     modal,
-    modalUser
+    modalUser,
+    modalDelete
   },
   methods: {
-    deleteUser(userData){
+    openModalDelete(userData){
+        this.selectedDelUser = userData;
+        this.$store.dispatch('setModal', { form: 'delete_user'});
+    },
+    close(){
+        this.$store.dispatch('setModal', { form: null}); 
+   },
+    deleteUser(){
+        let userData = this.selectedDelUser;
         this.$store.dispatch('setLoading', true); 
         apollo.mutate({
           mutation: DELETEUSERS,
@@ -77,6 +88,7 @@ export default {
             this.$store.dispatch('setLoading', false) 
             this.$store.dispatch('setSnackbar', `Deleted ${userData.name} user`)
             this.$store.dispatch('deleteUser', userData.id) 
+            
         })
         .catch(err => {
            console.log(err)
