@@ -1,7 +1,7 @@
 <template>
   <div>
        <!-- MODAL -->
-      <modal v-if="modal">
+      <modal>
         <modal-post></modal-post>
       </modal>
     <v-card v-if="items.length > 0">
@@ -49,7 +49,7 @@ export default {
   name: 'App',
   data() {
       return {
-        modal: false
+    
         // items:[]
     }
   },
@@ -80,6 +80,8 @@ export default {
         })
         .catch(err => {
            console.log(err)
+          this.$store.dispatch('setLoading', false) 
+          this.$store.dispatch('setSnackbar', "Failed to Delete")
         })
     },
     getAllPost(){
@@ -102,15 +104,8 @@ export default {
   },
   mounted() {
     this.getAllPost();
-    this.$store.subscribe((actions, state) => {
-        console.log(actions.type, state)
-          if(actions.type == 'SET_MODAL') {
-              if(state.shared.statusModal.form == "create_posts")
-                  this.modal = true;
-              else 
-                  this.modal = false;
-          }
-      })
+  },
+  created(){
   }
 }
 </script>

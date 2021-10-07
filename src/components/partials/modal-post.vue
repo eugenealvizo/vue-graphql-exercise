@@ -1,26 +1,27 @@
 
 <template>
-  <div>
+  <v-form 
+    ref="form">
   <v-container>
     <v-row>
       <v-col
-        cols="12"
-      >
+        cols="12">
+
         <v-text-field
-          label="Name"
+          label="Title"
           required
-            outlined
-        ></v-text-field>
-        <v-text-field
-          label="Username"
+          outlined
+          :rules="[v => !!v || 'title is required']"
+          v-model="title">
+        </v-text-field>
+        <v-textarea
+          label="Body"
           required
-            outlined
-        ></v-text-field>
-        <v-text-field
-          label="Email"
-          required
-            outlined
-        ></v-text-field>
+          outlined
+          :rules="[v => !!v || 'Body is required']"
+          v-model="body">
+        </v-textarea>
+
       </v-col>
     </v-row>
   </v-container>
@@ -29,29 +30,54 @@
           <v-btn
             color="secondary darken-1"
             text
-            @click="cancel()"
-          >
+            @click="cancel()">
             Cancel
           </v-btn>
           <v-btn
             color="Primary darken-1"
             text
-            @click="addUser(), cancel()"
-          >
+            @click="addPost()">
             Create
           </v-btn>
         </v-card-actions>
-    </div>
+  </v-form>
 </template>
 <script>
+  import { apollo } from "../../apollo";
+  import { CREATEPOST } from "../../graphql/posts";
+
   export default {
     data () {
       return {
       }
     },
     methods:{
-        addUser(){
-            this.$store.dispatch('addUser', {id: 'unique', name: 'title', email: 'body'})
+        addPost(){
+            if(this.$refs.form.validate()){
+              this.$store.dispatch('setLoading', true);
+              let post = {
+                title: this.title,
+                body: this.body
+              }
+              apollo.mutate({
+                mutation: CREATEPOST,
+                variables: {
+                  input: post 
+                }
+              })
+              .then(response => {
+                  console.log(response)
+                  this.$store.dispatch('addPost', response.data.createPost)
+                  this.$store.dispatch('setSnackbar', "Added new post");
+                  this.cancel();
+                  this.$store.dispatch('setLoading', false); 
+              })
+              .catch(err => {
+                  console.log(err)
+                  this.$store.dispatch('setLoading', false); 
+                  this.$store.dispatch('setSnackbar', "Failed to add")
+              })
+            }
         },
         cancel(){
             this.$store.dispatch('setModal', { form: null });

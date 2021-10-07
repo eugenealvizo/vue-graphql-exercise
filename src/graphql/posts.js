@@ -11,16 +11,14 @@ import gql from 'graphql-tag';
 }`;
 
 
-//  const CREATEPOST = gql`
-//     mutation CreatePost($input: CreatePostInput!) {
-//         createPost(input: $input) {
-//           data {
-//               id 
-//               title
-//               body
-//             }
-//         }
-//       }`;
+ const CREATEPOST = gql`
+    mutation CreatePost($input: CreatePostInput!) {
+        createPost(input: $input) {
+              id 
+              title
+              body
+        }
+      }`;
 
 
 // const UPDATEPOST = gql`
@@ -41,7 +39,7 @@ const DELETEPOST = gql`
 
 export {
     ALLPOST,
-    // CREATEPOST,
+    CREATEPOST,
     // UPDATEPOST,
     DELETEPOST
 }

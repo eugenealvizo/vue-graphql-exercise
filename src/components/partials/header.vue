@@ -12,7 +12,7 @@
 
           <v-snackbar
           light
-          absolute
+          fixed
           top
       v-model="isVisible"
     >

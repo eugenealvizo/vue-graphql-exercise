@@ -1,7 +1,7 @@
 <template>
     <v-card>
       <!-- MODAL -->
-      <modal v-if="modal">
+      <modal>
         <modal-user></modal-user> 
       </modal>
 
@@ -50,7 +50,6 @@ export default {
   name: 'App',
   data() {
       return {
-        modal: false,
         // items:[{
         // }]
     }
@@ -81,6 +80,8 @@ export default {
         })
         .catch(err => {
            console.log(err)
+           this.$store.dispatch('setLoading', false) 
+            this.$store.dispatch('setSnackbar', "Failed to Delete")
         })
     },
     getAllUsers(){
@@ -89,7 +90,6 @@ export default {
             query: ALLUSERS
           })
           .then(response => {
-            // this.items = response.data.users.data 
             this.$store.dispatch('setUsers', response.data.users.data)
             this.$store.dispatch('setLoading', false) 
           })
@@ -100,16 +100,6 @@ export default {
   },
   created(){
     this.getAllUsers();
-
-      this.$store.subscribe((actions, state) => {
-          console.log(actions.type, state)
-          if(actions.type == 'SET_MODAL') {
-              if(state.shared.statusModal.form == "create_users")
-                  this.modal = true;
-              else 
-                  this.modal = false;
-          }
-      })
   }
 }
 </script>

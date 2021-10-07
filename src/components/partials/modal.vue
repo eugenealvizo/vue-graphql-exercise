@@ -2,7 +2,7 @@
 <template>
   <v-row justify="center">
     <v-dialog
-      v-model="dialog"
+        v-model="modal"
       persistent
       max-width="650"
     >
@@ -21,8 +21,18 @@
   export default {
     data () {
       return {
-        dialog: true,
+          modal: false
       }
     },
+    created(){
+        this.$store.subscribe((actions, state) => {
+            if(actions.type == 'SET_MODAL') {
+                if(state.shared.statusModal.form != null)
+                    this.modal = true;
+                else 
+                    this.modal = false;
+            }
+        })
+    }
   }
 </script>
