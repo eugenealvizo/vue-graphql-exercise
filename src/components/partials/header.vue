@@ -12,6 +12,8 @@
 
           <v-snackbar
           light
+          absolute
+          top
       v-model="isVisible"
     >
         {{msg}}
@@ -39,7 +41,6 @@ import { mapGetters } from 'vuex';
     },
     created(){
          this.$store.subscribe((actions, state) => {
-             console.log(actions.type, state)
             if(actions.type == 'SET_SNACKBAR') {
                 this.isVisible = true
                 this.msg = state.shared.statusSnackBar

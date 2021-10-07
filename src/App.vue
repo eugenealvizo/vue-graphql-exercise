@@ -1,6 +1,7 @@
 <template>
   <v-app>
      <Header></header>
+     
     <div class="container">
       <router-view></router-view>
     </div>
@@ -33,8 +34,9 @@ export default {
   },
   methods: {
     addPost(){
-        this.$store.dispatch('addPost', {id: 'unique', title: 'title', body: 'body'})
-        this.$store.dispatch('addUser', {id: 'unique', name: 'title', email: 'body'})
+           this.$store.dispatch('setModal', { form: `create_${this.$route.name}`});
+        // this.$store.dispatch('addPost', {id: 'unique', title: 'title', body: 'body'})
+        // this.$store.dispatch('addUser', {id: 'unique', name: 'title', email: 'body'})
     }
   }
 }

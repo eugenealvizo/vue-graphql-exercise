@@ -39,5 +39,8 @@ export const actions = {
   },
   setSnackbar({commit}, val){
     commit('SET_SNACKBAR', val)
+  },
+  setModal({commit}, val){
+    commit('SET_MODAL', val)
   }
 }

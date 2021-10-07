@@ -29,7 +29,7 @@ export const mutations = {
     state.posts = state.posts.filter(post => post.id != postId)
   },
 
-  'DELETE_POST' (state, { id, updatedPost }) {
+  'UPDATE_POST' (state, { id, updatedPost }) {
     state.posts.map(post => {
       if(post.id === id) {
         post.title = updatedPost.title
@@ -43,5 +43,8 @@ export const mutations = {
   },
   'SET_SNACKBAR' (state, status) {
     state.statusSnackBar = status
+  },
+  'SET_MODAL' (state, status) {
+    state.statusModal = status
   }
 }

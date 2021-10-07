@@ -1,7 +1,12 @@
 <template>
     <v-card>
-      <!--- <modal>
-      </modal> --->
+      <!-- MODAL -->
+      <modal v-if="modal">
+        <modal-user></modal-user> 
+      </modal>
+
+
+      <!-- SCREEN -->
       <v-list class="pa-5"  v-if="items.length > 0">
         <v-list-item-group>
           <v-list-item
@@ -22,7 +27,7 @@
                   mdi-pencil
                 </v-icon>
               </v-btn>
-                <v-btn icon @click="deleteUser(item.id)">
+                <v-btn icon @click="deleteUser(item)">
                 <v-icon color="grey lighten-1">
                   mdi-delete
                 </v-icon>
@@ -35,15 +40,17 @@
 </template>
 
 <script>
-// import modal from './partials/modal.vue';
+import modal from './partials/modal.vue';
+import modalUser from './partials/modal-user.vue';
 import { mapGetters } from 'vuex';
 import { apollo } from "../apollo";
-import { ALLUSERS } from "../graphql/allusers";
+import { ALLUSERS, DELETEUSERS } from "../graphql/users";
 
 export default {
   name: 'App',
   data() {
       return {
+        modal: false,
         // items:[{
         // }]
     }
@@ -54,12 +61,27 @@ export default {
         })
   },
   components: {
-    // modal
+    modal,
+    modalUser
   },
   methods: {
-    deleteUser(id){
-        this.$store.dispatch('deleteUser', id) 
-        this.$store.dispatch('setSnackbar', 'Deleted User')
+    deleteUser(userData){
+        this.$store.dispatch('setLoading', true); 
+        apollo.mutate({
+          mutation: DELETEUSERS,
+            variables: { 
+              id: userData.id
+            }
+        })
+        .then(response => {
+           console.log(response)
+            this.$store.dispatch('setLoading', false) 
+            this.$store.dispatch('setSnackbar', `Deleted ${userData.name} user`)
+            this.$store.dispatch('deleteUser', userData.id) 
+        })
+        .catch(err => {
+           console.log(err)
+        })
     },
     getAllUsers(){
         this.$store.dispatch('setLoading', true) 
@@ -78,6 +100,16 @@ export default {
   },
   created(){
     this.getAllUsers();
+
+      this.$store.subscribe((actions, state) => {
+          console.log(actions.type, state)
+          if(actions.type == 'SET_MODAL') {
+              if(state.shared.statusModal.form == "create_users")
+                  this.modal = true;
+              else 
+                  this.modal = false;
+          }
+      })
   }
 }
 </script>

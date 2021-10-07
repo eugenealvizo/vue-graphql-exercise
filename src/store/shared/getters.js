@@ -9,6 +9,10 @@ export const getters = {
     return state.statusSnackbar
   },
 
+  getModal: state =>{
+    return state.statusModal
+  },
+
   isLoading: state =>{
     return state.isLoading
   },
