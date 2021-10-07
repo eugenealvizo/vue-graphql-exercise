@@ -21,15 +21,14 @@ import gql from 'graphql-tag';
       }`;
 
 
-// const UPDATEPOST = gql`
-//     mutation UpdatePost($id: ID!, $input: UpdatePostInput!) {
-//         updatePost(id: $id, input: $input) {
-//           data {
-//             id 
-//             title
-//             body
-//         }
-//     }`;
+const UPDATEPOST = gql`
+    mutation UpdatePost($id: ID!, $input: UpdatePostInput!) {
+        updatePost(id: $id, input: $input) {
+            id 
+            title
+            body
+        }
+    }`;
 
 const DELETEPOST = gql`
     mutation DeletePost($id: ID!) {
@@ -40,7 +39,7 @@ const DELETEPOST = gql`
 export {
     ALLPOST,
     CREATEPOST,
-    // UPDATEPOST,
+    UPDATEPOST,
     DELETEPOST
 }
   

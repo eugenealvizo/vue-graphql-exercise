@@ -2,7 +2,7 @@
   <div>
        <!-- MODAL -->
       <modal :title="`${modal.form }`">
-        <modal-post v-if="modal.form != null && modal.form == 'create_posts' "></modal-post>
+        <modal-post :post="selectedPost" @close="close" v-if="modal.form != null && (modal.form == 'create_posts' || modal.form == 'edit_post') "></modal-post>
         <modal-delete @close="close" @delete="deletePost(), close()" v-if="modal.form != null && modal.form == 'delete_post'"></modal-delete> 
       </modal>
     <v-card v-if="items.length > 0">
@@ -21,7 +21,7 @@
               <v-list-item-subtitle>{{ item.body }} </v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
-              <v-btn icon>
+              <v-btn @click="openModalEdit(item)" icon>
                 <v-icon color="grey lighten-1">
                   mdi-pencil
                 </v-icon>
@@ -52,7 +52,7 @@ export default {
   name: 'App',
   data() {
     return {
-        selectedDelPost: null
+        selectedPost: null
     }
   },
   components: {
@@ -67,16 +67,21 @@ export default {
       })
   },
   methods: {
-     openModalDelete(userData){
-        this.selectedDelUser = userData;
+     openModalDelete(postData){
+        this.selectedPost = postData;
         this.$store.dispatch('setModal', { form: 'delete_post'});
     },
+    openModalEdit(postData){
+        this.selectedPost = postData;
+        this.$store.dispatch('setModal', { form: 'edit_post'});
+    },
     close(){
+        this.selectedPost = null;
         this.$store.dispatch('setModal', { form: null}); 
     },
 
     deletePost(){
-         let postData = this.selectedDelUser;
+         let postData = this.selectedPost;
         this.$store.dispatch('setLoading', true); 
         apollo.mutate({
           mutation: DELETEPOST,
